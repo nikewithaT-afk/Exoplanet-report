@@ -1,188 +1,343 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exoplanet Report Website</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Investigating Exoplanets — Niket</title>
+  <meta name="description" content="Investigating Exoplanets: detection methods, types, missions, atmospheres and why they matter.">
   <style>
-    body {
-      margin: 0;
-      background: #000;
-      color: white;
-      font-family: Arial, sans-serif;
-      overflow-x: hidden;
+    :root{
+      --bg:#060013;--card:#0b0224;--muted:#bfbfe6;--accent1:#9b59ff;--accent2:#ff66c4;
+      --glass:rgba(255,255,255,0.03);
     }
-    /* STARFIELD BACKGROUND */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('https://i.imgur.com/9aKkYtF.png');
-      opacity: 0.25;
-      z-index: -1;
-      animation: floatStars 60s linear infinite;
-    }
-    @keyframes floatStars {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-2000px); }
-    }
-    header {
-      background: #111133dd;
-      padding: 25px;
-      text-align: center;
-      font-size: 32px;
-      font-weight: bold;
-      box-shadow: 0 0 20px #446;
-      backdrop-filter: blur(6px);
-    }
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 25px;
-      background: #080820cc;
-      padding: 15px;
-      box-shadow: 0 0 15px #223;
-      backdrop-filter: blur(4px);
-    }
-    nav a {
-      color: #a8c4ff;
-      text-decoration: none;
-      font-size: 18px;
-      transition: 0.3s;
-    }
-    nav a:hover {
-      color: white;
-      text-shadow: 0 0 8px white;
-      transform: scale(1.1);
-    }
-    .page {
-      display: none;
-      padding: 40px;
-      max-width: 900px;
-      margin: auto;
-      animation: fadeIn 0.6s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    img {
-      width: 100%;
-      border-radius: 12px;
-      margin: 15px 0;
-      box-shadow: 0 0 15px #335;
-      transition: 0.3s;
-    }
-    img:hover {
-      transform: scale(1.02);
-      box-shadow: 0 0 25px #66aaff;
-    }
-    footer {
-      margin-top: 50px;
-      text-align: center;
-      padding: 20px;
-      background: #070718cc;
-      color: #88aaff;
-      backdrop-filter: blur(4px);
-      font-size: 16px;
-      box-shadow: 0 0 15px #224;
-    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;color:#e9e6ff;background:linear-gradient(180deg,#050014 0%, #050517 40%, #000 100%)}
+
+    /* starfield layers */
+    body::before{content:'';position:fixed;inset:0;background-image:url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2000&auto=format&fit=crop&ixlib=rb-4.0.3&s=');opacity:0.12;filter:blur(2px);z-index:-3}
+    body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(180deg,rgba(17,0,34,0.08),transparent);z-index:-2}
+
+    header{padding:22px 18px;background:linear-gradient(90deg,rgba(15,2,40,0.6),rgba(30,0,60,0.3));backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,0.03)}
+    .wrap{max-width:1100px;margin:0 auto}
+    .brand{display:flex;gap:14px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;color:#0b0224;font-weight:900}
+    nav{margin-top:12px;display:flex;gap:14px;flex-wrap:wrap}
+    nav a{color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:8px;font-weight:700}
+    nav a:hover{background:rgba(155,89,255,0.08);color:var(--accent1);transform:translateY(-2px)}
+
+    main{display:grid;grid-template-columns:1fr 320px;gap:22px;padding:20px 18px}
+    .content{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:18px;border-radius:12px;box-shadow:0 8px 30px rgba(5,0,20,0.6)}
+    .sidebar{position:sticky;top:88px}
+
+    h1{font-size:28px;margin:6px 0}
+    h2{font-size:20px;margin:8px 0}
+    p,li{color:#e6e1ff;line-height:1.6}
+
+    .card{background:var(--glass);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);margin-bottom:12px}
+    .btn{background:linear-gradient(90deg,var(--accent1),var(--accent2));border:none;color:#070016;padding:8px 12px;border-radius:10px;font-weight:800;cursor:pointer}
+
+    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .gallery img{width:100%;height:140px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,0.04)}
+
+    pre{background:#020016;padding:12px;border-radius:8px;overflow:auto}
+
+    footer{text-align:center;padding:16px;color:var(--muted);margin-top:16px}
+
+    @media (max-width:980px){main{grid-template-columns:1fr}.sidebar{position:static}}
+    @media (max-width:640px){.gallery{grid-template-columns:repeat(2,1fr)}}
+
+    /* purple accent bars for sections */
+    section{border-left:6px solid rgba(155,89,255,0.14);padding-left:12px;margin-bottom:14px}
+    .fact{background:linear-gradient(90deg,rgba(155,89,255,0.06),rgba(255,102,196,0.04));padding:12px;border-radius:8px}
+
   </style>
 </head>
 <body>
-  <header>Exoplanets: Detection, Characteristics, and Scientific Importance</header>
+  <header>
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo">EX</div>
+        <div>
+          <div style="font-weight:900;color:#f7f3ff">Investigating Exoplanets</div>
+          <div style="color:var(--muted);font-size:13px">Niket — Science • Detection, Characteristics & Importance</div>
+        </div>
+      </div>
+      <nav style="margin-top:14px">
+        <a href="#home">Home</a>
+        <a href="#detection">Detection</a>
+        <a href="#types">Types</a>
+        <a href="#missions">Missions</a>
+        <a href="#atmospheres">Atmospheres</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#facts">Fun Facts</a>
+        <a href="#timeline">Timeline</a>
+        <a href="#quiz">Quiz</a>
+        <a href="#references">References</a>
+      </nav>
+    </div>
+  </header>
 
-  <nav>
-    <a href="#home">Home</a>
-    <a href="#detection">Detection Methods</a>
-    <a href="#types">Types of Exoplanets</a>
-    <a href="#missions">Space Missions</a>
-    <a href="#gallery">Gallery</a>
-    <a href="#references">References</a>
-  </nav>
+  <main class="wrap">
+    <section class="content" id="app">
+      <!-- Home content by default -->
+      <div id="home-page">
+        <h1>Overview</h1>
+        <p>Exoplanets are planets orbiting stars other than the Sun. Since the first confirmed detections in the 1990s,
+        astronomers have confirmed over 5,000 exoplanets using many methods. Studying them tells us how planets form,
+        how common Earth-like worlds might be, and where to search for possible life.</p>
 
-  <!-- HOME -->
-  <div id="home" class="page">
-    <h1>Overview</h1>
-    <p>Exoplanets are planets outside our Solar System. Since the first confirmed discovery in 1992, thousands have
-      been found, revealing incredible diversity in sizes, temperatures, and compositions.</p>
-    <img src="https://exoplanets.nasa.gov/internal_resources/3240/" alt="NASA Exoplanet Art" />
+        <div class="card">
+          <h2>Quick summary</h2>
+          <ul>
+            <li><strong>Detection:</strong> Transit, radial velocity, direct imaging, microlensing.</li>
+            <li><strong>Types:</strong> Hot Jupiters, super-Earths, mini-Neptunes, rocky Earth-like planets.</li>
+            <li><strong>Missions:</strong> Kepler, TESS, JWST, Roman Telescope (upcoming).</li>
+          </ul>
+        </div>
+
+        <section>
+          <h2>Why exoplanets are important</h2>
+          <div class="fact">
+            <p>Exoplanets reveal the full range of planetary systems — many different from our Solar System. They let us test
+            planet formation theories and search for atmospheric signs (biosignatures) that could hint at life.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2>Hero image</h2>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/8/85/HR_8799_system.jpg" alt="HR 8799 system (direct imaging)">
+          <p class="muted">HR 8799: one of the first planetary systems directly imaged (public domain / Wikimedia Commons).</p>
+        </section>
+      </div>
+
+    </section>
+
+    <aside class="sidebar">
+      <div class="card">
+        <h3>Quick links</h3>
+        <ul style="color:var(--muted);padding-left:14px">
+          <li><a href="#detection">Detection methods</a></li>
+          <li><a href="#missions">Key missions</a></li>
+          <li><a href="#gallery">Planet gallery</a></li>
+        </ul>
+        <div style="margin-top:10px"><button class="btn" id="downloadBtn">Download HTML</button></div>
+      </div>
+
+      <div class="card">
+        <h4>Author</h4>
+        <div style="font-weight:800">Niket</div>
+        <div style="color:var(--muted);font-size:13px;margin-top:8px">Purple Galaxy theme — images use Wikimedia / Unsplash / NASA public resources.</div>
+      </div>
+
+      <div class="card">
+        <h4>Teacher tips</h4>
+        <ol style="color:var(--muted);padding-left:14px">
+          <li>Reference sources in the References section for assessment.</li>
+          <li>Use print (browser) to export to PDF for submission.</li>
+        </ol>
+      </div>
+    </aside>
+  </main>
+
+  <!-- full content sections placed after main for router -->
+  <div id="full-pages" style="display:none">
+
+    <!-- DETECTION -->
+    <section id="detection" class="content card">
+      <h2>Detection Methods — In detail</h2>
+      <h3>Transit Method</h3>
+      <p>The transit method detects a periodic dip in a star's brightness when a planet crosses (transits) the star from our viewpoint.
+      By measuring the dip depth and duration we can calculate the planet's radius and orbital period. Kepler and TESS use this method.</p>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Transit_method_diagram.png" alt="Transit method diagram">
+
+      <h3>Radial Velocity (Doppler)</h3>
+      <p>Radial velocity measures shifts in a star's spectrum as it moves toward or away from us due to a planet's gravitational pull.
+      This gives a minimum mass for the planet and, combined with transit radius, yields density.</p>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/RV_teaser.png" alt="Radial velocity diagram">
+
+      <h3>Direct Imaging</h3>
+      <p>Direct imaging blocks out starlight (coronagraphs / starshades) to photograph massive, young, widely separated planets.</p>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/HR_8799_with_planets.jpg" alt="Direct imaging example">
+
+      <h3>Gravitational Microlensing</h3>
+      <p>Microlensing uses a foreground star as a lens; if a planet orbits that star it creates a short-duration blip in the lensing light curve.
+      Microlensing can detect planets far from their stars and even free-floating (rogue) planets.</p>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Gravitational_lens_full.jpg" alt="Microlensing">
+
+    </section>
+
+    <!-- TYPES -->
+    <section id="types" class="content card">
+      <h2>Types of Exoplanets</h2>
+      <h3>Hot Jupiters</h3>
+      <p>Gas giants with orbital periods of days — orbiting very close to their stars. They taught astronomers about planet migration.</p>
+
+      <h3>Super-Earths & Mini-Neptunes</h3>
+      <p>Planets with radii between Earth and Neptune. Many are volatile-rich or possess thick atmospheres — a common class in the galaxy.</p>
+
+      <h3>Earth-like Rocky Worlds</h3>
+      <p>Smaller, rocky planets. Those in the habitable zone (where liquid water is possible) are prime targets for biosignature searches.</p>
+
+      <h3>Rogue Planets</h3>
+      <p>Planets not gravitationally bound to any star, detected via microlensing.</p>
+
+      <div class="fact" style="margin-top:12px">
+        <strong>Habitable zone note:</strong> that zone depends on the star's luminosity and the planet's atmosphere — distance alone does not guarantee habitability.
+      </div>
+    </section>
+
+    <!-- MISSIONS -->
+    <section id="missions" class="content card">
+      <h2>Key Missions & Observatories</h2>
+      <h3>Kepler</h3>
+      <p>Launched 2009. Targeted a single patch of sky to measure transits and determine planet occurrence rates.</p>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/58/Kepler_Spacecraft.jpg" alt="Kepler spacecraft">
+
+      <h3>TESS</h3>
+      <p>Transiting Exoplanet Survey Satellite — an all-sky survey focused on bright nearby stars for follow-up by ground telescopes.</p>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/TESS_render.jpg" alt="TESS">
+
+      <h3>JWST</h3>
+      <p>James Webb Space Telescope provides high-resolution infrared spectra — ideal for measuring exoplanet atmospheres and molecules like H2O, CO2 and CH4.</p>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/71/JWST_by_NASA.jpg" alt="JWST">
+
+      <h3>Roman Telescope (upcoming)</h3>
+      <p>NASA's Nancy Grace Roman Space Telescope (launch mid-2020s) will contribute wide-field surveys and microlensing searches for planets.</p>
+    </section>
+
+    <!-- ATMOSPHERES -->
+    <section id="atmospheres" class="content card">
+      <h2>Atmospheric Studies & Biosignatures</h2>
+      <p>Spectroscopy during transits reveals atmospheric absorption features. Key molecules of interest include:</p>
+      <ul>
+        <li><strong>Water vapour (H<sub>2</sub>O)</strong> — common in warm atmospheres.</li>
+        <li><strong>Methane (CH<sub>4</sub>)</strong> — can be produced biologically or geologically.</li>
+        <li><strong>Oxygen & Ozone (O<sub>2</sub>, O<sub>3</sub>)</strong> — potential biosignatures but also produced abiotically.</li>
+        <li><strong>Carbon dioxide (CO<sub>2</sub>)</strong> — important greenhouse gas; influences surface temperature.</li>
+      </ul>
+      <p>Interpreting biosignatures requires context: planet temperature, stellar activity, and atmospheric chemistry all matter.</p>
+    </section>
+
+    <!-- GALLERY -->
+    <section id="gallery" class="content card">
+      <h2>Planet Gallery</h2>
+      <div class="gallery">
+        <figure><img src="https://upload.wikimedia.org/wikipedia/commons/8/85/HR_8799_system.jpg" alt="HR 8799"><figcaption style="font-size:12px;color:var(--muted)">HR 8799 — direct imaging</figcaption></figure>
+        <figure><img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Kepler-186f_artist_concept.jpg" alt="Kepler-186f"><figcaption style="font-size:12px;color:var(--muted)">Artist concept: Kepler-186f</figcaption></figure>
+        <figure><img src="https://upload.wikimedia.org/wikipedia/commons/0/09/Trappist-1_system_artists_impression.jpg" alt="TRAPPIST-1"><figcaption style="font-size:12px;color:var(--muted)">TRAPPIST-1 system (artist)</figcaption></figure>
+      </div>
+    </section>
+
+    <!-- FUN FACTS -->
+    <section id="facts" class="content card">
+      <h2>Fun Facts</h2>
+      <ul>
+        <li>There are more known exoplanets now than the total planets in our Solar System.</li>
+        <li>Hot Jupiters can orbit their star in just a few days.</li>
+        <li>Some planets orbit two stars (circumbinary planets) like Tatooine in Star Wars.</li>
+        <li>The TRAPPIST-1 system has at least 7 Earth-sized planets.</li>
+      </ul>
+      <div style="margin-top:12px">
+        <button class="btn" id="randomFact">Show a random fact</button>
+        <div id="factOut" style="margin-top:8px;color:var(--muted)"></div>
+      </div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section id="timeline" class="content card">
+      <h2>Timeline of key discoveries</h2>
+      <ul>
+        <li><strong>1992</strong> — First confirmed planets found orbiting a pulsar.</li>
+        <li><strong>1995</strong> — 51 Pegasi b, first hot Jupiter around a Sun-like star.</li>
+        <li><strong>2009–2013</strong> — Kepler Mission discovers thousands of candidates.</li>
+        <li><strong>2018–present</strong> — TESS and JWST advance atmospheric studies.</li>
+      </ul>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="quiz" class="content card">
+      <h2>Quick Quiz</h2>
+      <div>
+        <p><strong>1)</strong> Which method provides planet radius?</p>
+        <label><input type="radio" name="q1" value="a"> Radial velocity</label><br>
+        <label><input type="radio" name="q1" value="b"> Transit</label><br>
+        <label><input type="radio" name="q1" value="c"> Microlensing</label>
+
+        <p style="margin-top:10px"><strong>2)</strong> Which molecule is not typically a biosignature?</p>
+        <label><input type="radio" name="q2" value="a"> Ozone</label><br>
+        <label><input type="radio" name="q2" value="b"> Methane</label><br>
+        <label><input type="radio" name="q2" value="c"> Argon</label>
+
+        <div style="margin-top:10px"><button class="btn" id="checkQuiz">Check Answers</button></div>
+        <div id="quizOut" style="margin-top:8px;color:var(--muted)"></div>
+      </div>
+    </section>
+
+    <!-- REFERENCES -->
+    <section id="references" class="content card">
+      <h2>References & Further Reading</h2>
+      <ol>
+        <li>NASA Exoplanet Archive — official database of confirmed exoplanets.</li>
+        <li>Borucki, W. (2016). Kepler Mission: Development and Overview.</li>
+        <li>Perryman, M. (2018). The Exoplanet Handbook. Cambridge University Press.</li>
+        <li>Seager, S. (2010). Exoplanet Atmospheres: Physical Processes.</li>
+        <li>Ricker, G. et al. (2015). The Transiting Exoplanet Survey Satellite (TESS).</li>
+      </ol>
+    </section>
+
   </div>
 
-  <!-- DETECTION METHODS -->
-  <div id="detection" class="page">
-    <h1>Detection Methods</h1>
-    <h2>Transit Method</h2>
-    <p>Scientists detect small dips in a star’s brightness when a planet passes in front of it.</p>
-    <img src="https://exoplanets.nasa.gov/internal_resources/2214/" alt="Transit Method Diagram" />
-
-    <h2>Radial Velocity</h2>
-    <p>Measures the wobble of a star caused by the gravitational pull of an orbiting planet.</p>
-    <img src="https://exoplanets.nasa.gov/internal_resources/2193/" alt="Radial Velocity" />
-
-    <h2>Direct Imaging</h2>
-    <p>Rare technique where telescopes directly photograph large distant planets.</p>
-    <img src="https://exoplanets.nasa.gov/internal_resources/2219/" alt="Direct Imaging" />
-
-    <h2>Gravitational Microlensing</h2>
-    <p>Gravity bends and magnifies light, revealing planets passing in front of distant stars.</p>
-    <img src="https://exoplanets.nasa.gov/internal_resources/2220/" alt="Microlensing" />
-  </div>
-
-  <!-- TYPES -->
-  <div id="types" class="page">
-    <h1>Types of Exoplanets</h1>
-    <p>Scientists have found hot Jupiters, super-Earths, mini-Neptunes, and Earth-sized planets in habitable zones.</p>
-    <img src="https://exoplanets.nasa.gov/internal_resources/3229/" alt="Exoplanet Types" />
-  </div>
-
-  <!-- MISSIONS -->
-  <div id="missions" class="page">
-    <h1>Important Missions</h1>
-    <h2>Kepler Space Telescope</h2>
-    <p>Discovered thousands of exoplanets using the transit method.</p>
-    <img src="https://www.nasa.gov/wp-content/uploads/2015/04/kepler_spacecraft.jpg" alt="Kepler" />
-
-    <h2>TESS</h2>
-    <p>TESS continues the search for exoplanets around bright nearby stars.</p>
-    <img src="https://exoplanets.nasa.gov/internal_resources/3324/" alt="TESS" />
-
-    <h2>JWST</h2>
-    <p>JWST studies exoplanet atmospheres for molecules like water vapor and methane.</p>
-    <img src="https://www.nasa.gov/wp-content/uploads/2021/12/webb_artist_concept.jpg" alt="JWST" />
-  </div>
-
-  <!-- GALLERY -->
-  <div id="gallery" class="page">
-    <h1>Exoplanet Gallery</h1>
-    <img src="https://exoplanets.nasa.gov/internal_resources/3231/" alt="Gallery 1" />
-    <img src="https://exoplanets.nasa.gov/internal_resources/3228/" alt="Gallery 2" />
-    <img src="https://exoplanets.nasa.gov/internal_resources/3230/" alt="Gallery 3" />
-  </div>
-
-  <!-- REFERENCES -->
-  <div id="references" class="page">
-    <h1>References</h1>
-    <ul>
-      <li>NASA Exoplanet Archive</li>
-      <li>Borucki, Kepler Mission</li>
-      <li>Perryman, The Exoplanet Handbook</li>
-      <li>Seager, Exoplanet Atmospheres</li>
-      <li>Ricker, TESS Mission</li>
-    </ul>
-  </div>
+  <footer class="wrap">Made for school • Investigating Exoplanets — Niket • Images: Wikimedia / Unsplash / NASA public domain</footer>
 
   <script>
-    function showPage() {
-      const hash = window.location.hash.substring(1) || "home";
-      document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-      document.getElementById(hash).style.display = 'block';
+    // Simple hash routing
+    function showRoute(){
+      const hash = location.hash.replace('#','') || 'home'
+      // hide main home content
+      document.getElementById('home-page').style.display = hash==='home' ? 'block' : 'none'
+
+      // hide all full pages
+      document.querySelectorAll('#full-pages section').forEach(s=>s.style.display='none')
+      const target = document.querySelector('#full-pages #' + hash)
+      if(target) target.style.display = 'block'
+      // scroll to top for better UX
+      window.scrollTo({top:0,behavior:'smooth'})
     }
-    window.addEventListener('hashchange', showPage);
-    showPage();
+    window.addEventListener('hashchange', showRoute)
+    window.addEventListener('load', showRoute)
+
+    // Random fact generator
+    const facts = [
+      'More than 5,000 exoplanets confirmed (and counting).',
+      'Hot Jupiters can complete an orbit in just a few Earth days.',
+      'TRAPPIST-1 has at least 7 Earth-sized planets.',
+      'Some exoplanets orbit two stars (circumbinary planets).',
+      'Rogue planets wander the galaxy without a host star.'
+    ]
+    document.getElementById('randomFact').addEventListener('click', ()=>{
+      const out = document.getElementById('factOut')
+      out.textContent = facts[Math.floor(Math.random()*facts.length)]
+    })
+
+    // Quiz logic
+    document.getElementById('checkQuiz').addEventListener('click', ()=>{
+      const a1 = document.querySelector('input[name=q1]:checked')?.value
+      const a2 = document.querySelector('input[name=q2]:checked')?.value
+      const out = document.getElementById('quizOut')
+      let res = []
+      res.push(a1==='b' ? 'Q1: Correct — Transit gives radius.' : 'Q1: Incorrect.')
+      res.push(a2==='c' ? 'Q2: Correct — Argon is not a biosignature.' : 'Q2: Incorrect.')
+      out.innerText = res.join('
+')
+    })
+
+    // Download HTML button
+    document.getElementById('downloadBtn').addEventListener('click', ()=>{
+      const blob = new Blob([document.documentElement.outerHTML],{type:'text/html'})
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url; a.download = 'exoplanet_report_niket.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url)
+    })
   </script>
 </body>
 </html>
